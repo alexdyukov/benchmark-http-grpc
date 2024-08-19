@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "benchmark-http-grpc/grpcapi";
+
+service GrpcService {
+  rpc Hello(GrpcInputName) returns (GrpcResponse) {}
+}
+
+message GrpcInputName {
+  string inputName = 1;
+}
+
+message GrpcResponse {
+  string response = 1;
+}
