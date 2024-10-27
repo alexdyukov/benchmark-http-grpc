@@ -9,10 +9,10 @@ import (
 	"testing"
 
 	"github.com/goccy/go-json"
-	"golang.org/x/net/http2"
+	"github.com/quic-go/quic-go/http3"
 )
 
-func BenchmarkTLSConnReuseXNETHTTP2(b *testing.B) {
+func BenchmarkHTTP3TLSConnReuse(b *testing.B) {
 	ctx := context.Background()
 
 	bodyRaw := []byte(`{"secure":"tls"}`)
@@ -21,15 +21,15 @@ func BenchmarkTLSConnReuseXNETHTTP2(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		response := HTTPResponse{}
 
-		httpClient := &http.Client{
-			Transport: &http2.Transport{
-				DisableCompression: true,
-				ConnPool:           nil, // enable connection reuse
-				TLSClientConfig:    globalTLSConfig,
-			},
+		transport := &http3.RoundTripper{
+			DisableCompression: true,
+			TLSClientConfig:    globalTLSConfig,
 		}
+		defer transport.Close()
 
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://localhost:60005/", nil)
+		httpClient := &http.Client{Transport: transport}
+
+		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://localhost:60001/", nil)
 		if err != nil {
 			panic(err)
 		}
@@ -47,7 +47,7 @@ func BenchmarkTLSConnReuseXNETHTTP2(b *testing.B) {
 				b.Fatal(err)
 			}
 
-			if response.Response != "Hello tls on HTTP/2.0" {
+			if response.Response != "Hello tls on HTTP/3.0" {
 				b.Fatal("invalid return value: " + response.Response)
 			}
 		}

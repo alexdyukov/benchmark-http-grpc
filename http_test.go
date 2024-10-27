@@ -30,6 +30,10 @@ func HTTPHello(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
+	if req.Secure == "tls" && r.TLS == nil || req.Secure == "raw" && r.TLS != nil {
+		panic("invalid input data")
+	}
+
 	if err := json.NewEncoder(w).Encode(HTTPResponse{Response: "Hello " + req.Secure + " on " + r.Proto}); err != nil {
 		panic(err)
 	}
@@ -39,7 +43,7 @@ func rawNetHTTP1() {
 	handler := http.HandlerFunc(HTTPHello)
 
 	server := http.Server{
-		Addr:         ":60002",
+		Addr:         ":40000",
 		Handler:      handler,
 		ReadTimeout:  time.Second,
 		WriteTimeout: time.Second,
@@ -55,7 +59,7 @@ func tlsNetHTTP1() {
 	handler := http.HandlerFunc(HTTPHello)
 
 	server := http.Server{
-		Addr:         ":60003",
+		Addr:         ":40001",
 		Handler:      handler,
 		ReadTimeout:  time.Second,
 		WriteTimeout: time.Second,
@@ -67,12 +71,12 @@ func tlsNetHTTP1() {
 	}()
 }
 
-func rawXNetHTTP2() {
+func rawNetHTTP2() {
 	handler := http.HandlerFunc(HTTPHello)
 
 	h2s := &http2.Server{}
 	server := &http.Server{
-		Addr:         ":60004",
+		Addr:         ":50000",
 		Handler:      h2c.NewHandler(handler, h2s),
 		ReadTimeout:  time.Second,
 		WriteTimeout: time.Second,
@@ -86,11 +90,11 @@ func rawXNetHTTP2() {
 	}()
 }
 
-func tlsXNetHTTP2() {
+func tlsNetHTTP2() {
 	handler := http.HandlerFunc(HTTPHello)
 
 	server := &http.Server{
-		Addr:         ":60005",
+		Addr:         ":50001",
 		Handler:      handler,
 		ReadTimeout:  time.Second,
 		WriteTimeout: time.Second,
@@ -105,7 +109,7 @@ func tlsQUICGOHTTP3() {
 	handler := http.HandlerFunc(HTTPHello)
 
 	server := http3.Server{
-		Addr:        ":60006",
+		Addr:        ":60001",
 		Handler:     handler,
 		IdleTimeout: time.Second,
 	}

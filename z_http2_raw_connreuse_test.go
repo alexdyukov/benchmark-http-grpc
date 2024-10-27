@@ -14,7 +14,7 @@ import (
 	"golang.org/x/net/http2"
 )
 
-func BenchmarkRAWConnReuseXNETHTTP2(b *testing.B) {
+func BenchmarkHTTP2RAWConnReuse(b *testing.B) {
 	ctx := context.Background()
 
 	bodyRaw := []byte(`{"secure":"raw"}`)
@@ -23,18 +23,19 @@ func BenchmarkRAWConnReuseXNETHTTP2(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		response := HTTPResponse{}
 
-		httpClient := &http.Client{
-			Transport: &http2.Transport{
-				DisableCompression: true,
-				ConnPool:           nil, // enable connection reuse
-				AllowHTTP:          true,
-				DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
-					return new(net.Dialer).DialContext(ctx, network, addr)
-				},
+		dialer := &net.Dialer{}
+
+		transport := &http2.Transport{
+			DisableCompression: true,
+			AllowHTTP:          true,
+			DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
+				return dialer.DialContext(ctx, network, addr)
 			},
 		}
 
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://localhost:60004/", nil)
+		httpClient := &http.Client{Transport: transport}
+
+		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://localhost:50000/", nil)
 		if err != nil {
 			panic(err)
 		}

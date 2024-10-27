@@ -10,7 +10,7 @@ import (
 	"github.com/goccy/go-json"
 )
 
-func BenchmarkRAWNoConnReuseNETHTTP1(b *testing.B) {
+func BenchmarkHTTP1RAWNoConnReuse(b *testing.B) {
 	ctx := context.Background()
 
 	bodyRaw := []byte(`{"secure":"raw"}`)
@@ -19,15 +19,15 @@ func BenchmarkRAWNoConnReuseNETHTTP1(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		response := HTTPResponse{}
 
-		httpClient := &http.Client{
-			Transport: &http.Transport{
-				DisableCompression: true,
-				DisableKeepAlives:  true,  // disable connection reuse
-				ForceAttemptHTTP2:  false, // http1.1 only
-			},
+		transport := &http.Transport{
+			DisableCompression: true,
+			DisableKeepAlives:  true,
+			ForceAttemptHTTP2:  false,
 		}
 
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://localhost:60002/", nil)
+		httpClient := &http.Client{Transport: transport}
+
+		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://localhost:40000/", nil)
 		if err != nil {
 			b.Fatal(err)
 		}

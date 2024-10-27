@@ -30,3 +30,7 @@ example.key
 
 # generated code
 grpcapi/*.go
+
+# test_result
+old.txt
+new.txt

@@ -21,22 +21,25 @@ goos: linux
 goarch: amd64
 pkg: github.com/alexdyukov/benchmark-http-grpc
 cpu: AMD Ryzen 7 8845H w/ Radeon 780M Graphics
-BenchmarkRAWConnReuseGRPC-16              100000              8922 ns/op            9759 B/op        192 allocs/op
-BenchmarkRAWConnReuseNETHTTP1-16          100000              6192 ns/op            6534 B/op         76 allocs/op
-BenchmarkRAWConnReuseXNETHTTP2-16         100000              8835 ns/op           13899 B/op         89 allocs/op
-BenchmarkRAWNoConnReuseNETHTTP1-16        100000             19583 ns/op           19380 B/op        144 allocs/op
-BenchmarkTLSConnReuseGRPC-16              100000              8677 ns/op            9855 B/op        195 allocs/op
-BenchmarkTLSConnReuseNETHTTP1-16          100000              5416 ns/op            6587 B/op         80 allocs/op
-BenchmarkTLSConnReuseQUICGOHTTP3-16       100000             16872 ns/op           22172 B/op        209 allocs/op
-BenchmarkTLSConnReuseXNETHTTP2-16         100000              9281 ns/op           12329 B/op         94 allocs/op
-BenchmarkTLSNoConnReuseNETHTTP1-16        100000            761961 ns/op          198551 B/op       1286 allocs/op
+BenchmarkGRPCRAWConnReuse-16              100000              9591 ns/op            9759 B/op        192 allocs/op
+BenchmarkGRPCRAWNoConnReuse-16            100000            108120 ns/op          183461 B/op        930 allocs/op
+BenchmarkGRPCTLSConnReuse-16              100000              8938 ns/op            9853 B/op        195 allocs/op
+BenchmarkGRPCTLSNoConnReuse-16            100000            928456 ns/op          361984 B/op       2136 allocs/op
+BenchmarkHTTP1RAWConnReuse-16             100000              6054 ns/op            6445 B/op         76 allocs/op
+BenchmarkHTTP1RAWNoConnReuse-16           100000             22216 ns/op           19043 B/op        143 allocs/op
+BenchmarkHTTP1TLSConnReuse-16             100000              6313 ns/op            6543 B/op         80 allocs/op
+BenchmarkHTTP1TLSNoConnReuse-16           100000            895523 ns/op          200309 B/op       1285 allocs/op
+BenchmarkHTTP2RAWConnReuse-16             100000             10702 ns/op           12860 B/op         89 allocs/op
+BenchmarkHTTP2TLSConnReuse-16             100000             10903 ns/op           13867 B/op         96 allocs/op
+BenchmarkHTTP2TLSNoConnReuse-16           100000            933833 ns/op          215772 B/op       1455 allocs/op
+BenchmarkHTTP3TLSConnReuse-16             100000             22874 ns/op           22280 B/op        210 allocs/op
 PASS
-ok      github.com/alexdyukov/benchmark-http-grpc       85.752s
+ok      github.com/alexdyukov/benchmark-http-grpc       297.645s
 ```
 
-## TODO tests without keepalive (no conn reuse) for
-1. grpc insecure
-2. grpc tls
-3. x/net/http2 insecure
-4. x/net/http2 tls
-5. quic-go/http3 tls
+## What repo missing
+There is no benchmarks for
+1. http2 (x/net/http2) insecure (h2) without connection reuse (disabled keepalives)
+2. quic (quic-go/http3) insecure with and without connection reuse
+3. quic (quic-go/http3) tls without connection reuse (disabled keepalives)
+cause of hardcoded transports and/or internal connection pools and/or lack of keepalive option support

@@ -6,26 +6,19 @@ import (
 
 	"github.com/alexdyukov/benchmark-http-grpc/grpcapi"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-func BenchmarkTLSConnReuseGRPC(b *testing.B) {
+func BenchmarkGRPCRAWNoConnReuse(b *testing.B) {
 	ctx := context.Background()
-
-	creds, err := credentials.NewClientTLSFromFile("example.crt", "localhost")
-	if err != nil {
-		b.Fatal(err)
-	}
-
-	authOption := grpc.WithTransportCredentials(creds)
+	authOption := grpc.WithTransportCredentials(insecure.NewCredentials())
 
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
-		conn, err := grpc.NewClient("localhost:60001", authOption)
-		if err != nil {
-			b.Fatal(err)
+		conn := grpcNoConnReuseClient{
+			target:     "localhost:30000",
+			dialOption: authOption,
 		}
-
 		client := grpcapi.NewGrpcServiceClient(conn)
 
 		for pb.Next() {

@@ -9,10 +9,9 @@ import (
 	"testing"
 
 	"github.com/goccy/go-json"
-	"github.com/quic-go/quic-go/http3"
 )
 
-func BenchmarkTLSConnReuseQUICGOHTTP3(b *testing.B) {
+func BenchmarkHTTP1TLSNoConnReuse(b *testing.B) {
 	ctx := context.Background()
 
 	bodyRaw := []byte(`{"secure":"tls"}`)
@@ -21,20 +20,18 @@ func BenchmarkTLSConnReuseQUICGOHTTP3(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		response := HTTPResponse{}
 
-		roundTripper := &http3.RoundTripper{
+		transport := &http.Transport{
 			DisableCompression: true,
-			Dial:               nil, // enable connection reuse
+			DisableKeepAlives:  true,
+			ForceAttemptHTTP2:  false,
 			TLSClientConfig:    globalTLSConfig,
 		}
-		defer roundTripper.Close()
 
-		httpClient := &http.Client{
-			Transport: roundTripper,
-		}
+		httpClient := &http.Client{Transport: transport}
 
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://localhost:60006/", nil)
+		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://localhost:40001/", nil)
 		if err != nil {
-			panic(err)
+			b.Fatal(err)
 		}
 
 		for pb.Next() {
@@ -50,7 +47,7 @@ func BenchmarkTLSConnReuseQUICGOHTTP3(b *testing.B) {
 				b.Fatal(err)
 			}
 
-			if response.Response != "Hello tls on HTTP/3.0" {
+			if response.Response != "Hello tls on HTTP/1.1" {
 				b.Fatal("invalid return value: " + response.Response)
 			}
 		}
