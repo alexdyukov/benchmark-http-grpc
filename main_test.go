@@ -23,8 +23,8 @@ func TestMain(m *testing.M) {
 	rawNetHTTP1()
 	tlsNetHTTP1()
 
-	rawXNetHTTP2()
-	tlsXNetHTTP2()
+	rawNetHTTP2()
+	tlsNetHTTP2()
 
 	// quic doesnt support raw (no tls) server
 	tlsQUICGOHTTP3()

@@ -3,6 +3,7 @@ package main_test
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"testing"
@@ -10,24 +11,25 @@ import (
 	"github.com/goccy/go-json"
 )
 
-func BenchmarkRAWConnReuseNETHTTP1(b *testing.B) {
+func BenchmarkHTTP1TLSConnReuse(b *testing.B) {
 	ctx := context.Background()
 
-	bodyRaw := []byte(`{"secure":"raw"}`)
+	bodyRaw := []byte(`{"secure":"tls"}`)
 
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
 		response := HTTPResponse{}
 
-		httpClient := &http.Client{
-			Transport: &http.Transport{
-				DisableCompression: true,
-				DisableKeepAlives:  false, // enable connection reuse
-				ForceAttemptHTTP2:  false, // http1.1 only
-			},
+		transport := &http.Transport{
+			DisableCompression: true,
+			DisableKeepAlives:  false,
+			ForceAttemptHTTP2:  false,
+			TLSClientConfig:    globalTLSConfig,
 		}
 
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://localhost:60002/", nil)
+		httpClient := &http.Client{Transport: transport}
+
+		req, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://localhost:40001/", nil)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -41,10 +43,11 @@ func BenchmarkRAWConnReuseNETHTTP1(b *testing.B) {
 			}
 
 			if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+				fmt.Println()
 				b.Fatal(err)
 			}
 
-			if response.Response != "Hello raw on HTTP/1.1" {
+			if response.Response != "Hello tls on HTTP/1.1" {
 				b.Fatal("invalid return value: " + response.Response)
 			}
 		}

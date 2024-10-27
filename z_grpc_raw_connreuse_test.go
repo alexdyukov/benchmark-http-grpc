@@ -9,13 +9,13 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func BenchmarkRAWConnReuseGRPC(b *testing.B) {
+func BenchmarkGRPCRAWConnReuse(b *testing.B) {
 	ctx := context.Background()
 	authOption := grpc.WithTransportCredentials(insecure.NewCredentials())
 
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
-		conn, err := grpc.NewClient("localhost:60000", authOption)
+		conn, err := grpc.NewClient("localhost:30000", authOption)
 		if err != nil {
 			b.Fatal(err)
 		}
