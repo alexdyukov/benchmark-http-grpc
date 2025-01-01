@@ -42,4 +42,5 @@ There is no benchmarks for
 1. http2 (x/net/http2) insecure (h2) without connection reuse (disabled keepalives)
 2. quic (quic-go/http3) insecure with and without connection reuse
 3. quic (quic-go/http3) tls without connection reuse (disabled keepalives)
+
 cause of hardcoded transports and/or internal connection pools and/or lack of keepalive option support
