@@ -1,7 +1,12 @@
 name: update_deps
+
 on:
   schedule:
     - cron: '0 0 * * 0'
+  push:
+    branches-ignore:
+    - master
+
 jobs:
   update_deps:
     runs-on: ubuntu-latest
@@ -13,7 +18,8 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 'stable'
-          check-latest: true
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
       - name: Checkout git repository
         uses: actions/checkout@v4
       - name: Commit changes and create PR if we have any changes
