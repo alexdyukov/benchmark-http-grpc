@@ -20,4 +20,7 @@ git push --set-upstream origin ${BRANCH_NAME} -f || exit 0
 go test -bench=. -benchmem -benchtime=100000x > new.txt
 
 # 6. create PR with benchmark difference
-gh pr create -a ${REPO_OWNER} -b "$(benchstat old.txt new.txt)" --fill
+echo '```' > github_body.txt
+benchstat old.txt new.txt >> github_body.txt
+echo '```' >> github_body.txt
+gh pr create -a ${REPO_OWNER} -F github_body.txt --fill
