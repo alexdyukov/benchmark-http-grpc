@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install golang
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: 'stable'
       - name: Install Protoc
         uses: arduino/setup-protoc@v3
       - name: Checkout git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install dependencies
         run: |
           go install golang.org/x/perf/cmd/benchstat@latest && \
@@ -25,4 +25,4 @@ jobs:
           openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes -keyout example.key -out example.crt -subj "/CN=localhost" -addext "subjectAltName = DNS:localhost" && \
           protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative grpcapi/*.proto
       - name: Check that code is updated
-        run: go get -u ./... && git diff --exit-code
+        run: go get -u ./... && go mod tidy && go get -u ./... && git diff --exit-code

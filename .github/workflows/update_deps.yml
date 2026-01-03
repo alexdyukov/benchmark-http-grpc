@@ -7,18 +7,15 @@ on:
 jobs:
   update_deps:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
     steps:
       - name: Install golang
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: 'stable'
       - name: Install Protoc
         uses: arduino/setup-protoc@v3
       - name: Checkout git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install dependencies
         run: |
           go install golang.org/x/perf/cmd/benchstat@latest && \
