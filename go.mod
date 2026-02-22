@@ -1,8 +1,6 @@
 module github.com/alexdyukov/benchmark-http-grpc
 
-go 1.24.0
-
-toolchain go1.24.2
+go 1.25.0
 
 replace github.com/alexdyukov/benchmark-http-grpc => ./
 
@@ -27,5 +25,5 @@ require (
 	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.34.0 // indirect
 	golang.org/x/tools v0.41.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260209200024-4cfbd4190f57 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260217215200-42d3e9bedb6d // indirect
 )
