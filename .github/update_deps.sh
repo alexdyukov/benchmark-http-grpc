@@ -4,7 +4,7 @@
 go test -bench=. -benchmem -benchtime=100000x > old.txt
 
 # 2. update dependencies
-go get -u ./... && go mod tidy && go get -u ./...
+go get -u ./... && go get -u -t ./... && go mod tidy && go get -u ./...
 
 # 3. configure git
 git config --global user.name 'update_deps robot'

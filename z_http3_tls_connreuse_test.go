@@ -21,7 +21,7 @@ func BenchmarkHTTP3TLSConnReuse(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		response := HTTPResponse{}
 
-		transport := &http3.RoundTripper{
+		transport := &http3.Transport{
 			DisableCompression: true,
 			TLSClientConfig:    globalTLSConfig,
 		}
