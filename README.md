@@ -5,10 +5,11 @@ Performance benchmarking of various version of http with json encoding decoding 
 ```
 # regenerate proto contracts
 protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative grpcapi/*.proto
-# ensure you have up to date dependencies
-go get -u ./...
 # generate self signed cert
 openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes -keyout example.key -out example.crt -subj "/CN=localhost" -addext "subjectAltName = DNS:localhost"
+# remember of udp buffer sizes, more info at https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes
+sudo sysctl -w net.core.rmem_max=7500000
+sudo sysctl -w net.core.wmem_max=7500000
 # run benchmarks
 go test -bench=. -benchmem -benchtime=100000x
 ```
@@ -16,25 +17,24 @@ go test -bench=. -benchmem -benchtime=100000x
 ## Results
 ```
 $ go test -bench=. -benchmem -benchtime=100000x
-warning: GOPATH set to GOROOT (/home/user/go) has no effect
 goos: linux
 goarch: amd64
 pkg: github.com/alexdyukov/benchmark-http-grpc
 cpu: AMD Ryzen 7 8845H w/ Radeon 780M Graphics
-BenchmarkGRPCRAWConnReuse-16              100000              9591 ns/op            9759 B/op        192 allocs/op
-BenchmarkGRPCRAWNoConnReuse-16            100000            108120 ns/op          183461 B/op        930 allocs/op
-BenchmarkGRPCTLSConnReuse-16              100000              8938 ns/op            9853 B/op        195 allocs/op
-BenchmarkGRPCTLSNoConnReuse-16            100000            928456 ns/op          361984 B/op       2136 allocs/op
-BenchmarkHTTP1RAWConnReuse-16             100000              6054 ns/op            6445 B/op         76 allocs/op
-BenchmarkHTTP1RAWNoConnReuse-16           100000             22216 ns/op           19043 B/op        143 allocs/op
-BenchmarkHTTP1TLSConnReuse-16             100000              6313 ns/op            6543 B/op         80 allocs/op
-BenchmarkHTTP1TLSNoConnReuse-16           100000            895523 ns/op          200309 B/op       1285 allocs/op
-BenchmarkHTTP2RAWConnReuse-16             100000             10702 ns/op           12860 B/op         89 allocs/op
-BenchmarkHTTP2TLSConnReuse-16             100000             10903 ns/op           13867 B/op         96 allocs/op
-BenchmarkHTTP2TLSNoConnReuse-16           100000            933833 ns/op          215772 B/op       1455 allocs/op
-BenchmarkHTTP3TLSConnReuse-16             100000             22874 ns/op           22280 B/op        210 allocs/op
+BenchmarkGRPCRAWConnReuse-16              100000             88381 ns/op            9581 B/op        152 allocs/op
+BenchmarkGRPCRAWNoConnReuse-16            100000            434862 ns/op           70205 B/op        877 allocs/op
+BenchmarkGRPCTLSConnReuse-16              100000             82215 ns/op            9178 B/op        154 allocs/op
+BenchmarkGRPCTLSNoConnReuse-16            100000           1643176 ns/op          384387 B/op       1869 allocs/op
+BenchmarkHTTP1RAWConnReuse-16             100000             68501 ns/op            6998 B/op         82 allocs/op
+BenchmarkHTTP1RAWNoConnReuse-16           100000            150305 ns/op           20488 B/op        155 allocs/op
+BenchmarkHTTP1TLSConnReuse-16             100000             64722 ns/op            7149 B/op         86 allocs/op
+BenchmarkHTTP1TLSNoConnReuse-16           100000           1429114 ns/op          278701 B/op       1106 allocs/op
+BenchmarkHTTP2RAWConnReuse-16             100000             78032 ns/op           11280 B/op         91 allocs/op
+BenchmarkHTTP2TLSConnReuse-16             100000             80200 ns/op           12413 B/op         96 allocs/op
+BenchmarkHTTP2TLSNoConnReuse-16           100000           1477753 ns/op          282886 B/op       1274 allocs/op
+BenchmarkHTTP3TLSConnReuse-16             100000             78790 ns/op           22781 B/op        220 allocs/op
 PASS
-ok      github.com/alexdyukov/benchmark-http-grpc       297.645s
+ok      github.com/alexdyukov/benchmark-http-grpc       588.957s
 ```
 
 ## What repo missing
