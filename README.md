@@ -21,20 +21,20 @@ goos: linux
 goarch: amd64
 pkg: github.com/alexdyukov/benchmark-http-grpc
 cpu: AMD Ryzen 7 8845H w/ Radeon 780M Graphics
-BenchmarkGRPCRAWConnReuse-16              100000             88381 ns/op            9581 B/op        152 allocs/op
-BenchmarkGRPCRAWNoConnReuse-16            100000            434862 ns/op           70205 B/op        877 allocs/op
-BenchmarkGRPCTLSConnReuse-16              100000             82215 ns/op            9178 B/op        154 allocs/op
-BenchmarkGRPCTLSNoConnReuse-16            100000           1643176 ns/op          384387 B/op       1869 allocs/op
-BenchmarkHTTP1RAWConnReuse-16             100000             68501 ns/op            6998 B/op         82 allocs/op
-BenchmarkHTTP1RAWNoConnReuse-16           100000            150305 ns/op           20488 B/op        155 allocs/op
-BenchmarkHTTP1TLSConnReuse-16             100000             64722 ns/op            7149 B/op         86 allocs/op
-BenchmarkHTTP1TLSNoConnReuse-16           100000           1429114 ns/op          278701 B/op       1106 allocs/op
-BenchmarkHTTP2RAWConnReuse-16             100000             78032 ns/op           11280 B/op         91 allocs/op
-BenchmarkHTTP2TLSConnReuse-16             100000             80200 ns/op           12413 B/op         96 allocs/op
-BenchmarkHTTP2TLSNoConnReuse-16           100000           1477753 ns/op          282886 B/op       1274 allocs/op
-BenchmarkHTTP3TLSConnReuse-16             100000             78790 ns/op           22781 B/op        220 allocs/op
+BenchmarkGRPCRAWConnReuse-16              100000             71948 ns/op            9671 B/op        152 allocs/op
+BenchmarkGRPCRAWNoConnReuse-16            100000            329226 ns/op           69573 B/op        869 allocs/op
+BenchmarkGRPCTLSConnReuse-16              100000             71128 ns/op            9254 B/op        154 allocs/op
+BenchmarkGRPCTLSNoConnReuse-16            100000           1377981 ns/op          383269 B/op       1862 allocs/op
+BenchmarkHTTP1RAWConnReuse-16             100000             53153 ns/op            7001 B/op         82 allocs/op
+BenchmarkHTTP1RAWNoConnReuse-16           100000            118265 ns/op           20483 B/op        155 allocs/op
+BenchmarkHTTP1TLSConnReuse-16             100000             50663 ns/op            7160 B/op         86 allocs/op
+BenchmarkHTTP1TLSNoConnReuse-16           100000           1196790 ns/op          278870 B/op       1106 allocs/op
+BenchmarkHTTP2RAWConnReuse-16             100000             61935 ns/op           10961 B/op         91 allocs/op
+BenchmarkHTTP2TLSConnReuse-16             100000             65036 ns/op           12765 B/op         96 allocs/op
+BenchmarkHTTP2TLSNoConnReuse-16           100000           1274901 ns/op          287684 B/op       1276 allocs/op
+BenchmarkHTTP3TLSConnReuse-16             100000             65410 ns/op           23026 B/op        225 allocs/op
 PASS
-ok      github.com/alexdyukov/benchmark-http-grpc       588.957s
+ok      github.com/alexdyukov/benchmark-http-grpc       494.986s
 ```
 
 ## What repo missing
